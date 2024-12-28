@@ -4,7 +4,7 @@ import tensorflow as tf
 import numpy as np
 
 # URL file model
-MODEL_URL = "https://github.com/netrialarahmi/TanamTepat/releases/download/agriculture/Model_Fix.h5"
+MODEL_URL = "https://github.com/netrialiarahmi/TanamTepat/releases/download/agriculture/Model_Fix.h5"
 
 # Fungsi untuk memuat model
 def load_model():
