@@ -2,16 +2,28 @@ import streamlit as st
 from PIL import Image
 import tensorflow as tf
 import numpy as np
-from tensorflow.keras.models import model_from_json
 
+# URL file model
+MODEL_URL = "https://github.com/netrialarahmi/TanamTepat/releases/download/agriculture/Model_Fix.h5"
+
+# Fungsi untuk memuat model
 def load_model():
-    """Memuat model dari file JSON dan bobot."""
-    with open("model.json", "r") as json_file:
-        model_json = json_file.read()
-    model = model_from_json(model_json)
-    model.load_weights("weights.h5")  # Pastikan file weights.h5 ada
-    model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
-    return model
+    from pathlib import Path
+    import requests
+    import tensorflow as tf
+
+    model_path = "Model_Fix.h5"
+    if not Path(model_path).exists():
+        with st.spinner("Mengunduh model..."):
+            response = requests.get(MODEL_URL, stream=True)
+            if response.status_code == 200:
+                with open(model_path, "wb") as f:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        f.write(chunk)
+            else:
+                st.error("Gagal mengunduh model!")
+                st.stop()
+    return tf.keras.models.load_model(model_path)
 
 def predict_soil_type(model, image):
     """Memproses gambar dan memprediksi jenis tanah."""
