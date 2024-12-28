@@ -2,10 +2,15 @@ import streamlit as st
 from PIL import Image
 import tensorflow as tf
 import numpy as np
+from tensorflow.keras.models import model_from_json
 
 def load_model():
-    """Memuat model prediksi yang sudah dilatih sebelumnya."""
-    model = tf.keras.models.load_model("Model_Fix.h5")
+    """Memuat model dari file JSON dan bobot."""
+    with open("model.json", "r") as json_file:
+        model_json = json_file.read()
+    model = model_from_json(model_json)
+    model.load_weights("weights.h5")  # Pastikan file weights.h5 ada
+    model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
     return model
 
 def predict_soil_type(model, image):
